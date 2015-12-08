@@ -1,16 +1,55 @@
 ﻿$(document).ready(function () {
+    //set up DataTransfer object in jQuery
     jQuery.event.props.push('dataTransfer');
+    //initialize game
     numberScramble.initialize()();
+    //update score record
+    numberScramble.updateGameRecord();
+    //Add event listener to mode select buttons
      $('#easyMode').on('click', numberScramble.easyMode);
      $('#mediumMode').on('click', numberScramble.mediumMode);
      $('#hardMode').on('click',numberScramble.hardMode);
-    numberScramble.displayGameRecord();
+    //Add audio control and animation
+     var audio = $('#audio')[0];
+     var toadAnimate = function(){
+        $('body').append("<img src='img/toad.png' id='animateImg'/>");
+        $('#animateImg').animate({'left':0},3000);
+        return $('#animateImg').animate({'left':'-450px'},3000).promise();
+     };
+     var goombaAnimate = function(promise){
+        var goombaPromise = promise.pipe(function(){
+            $('#animateImg').attr({'src':'img/goomba.png','top':'50px'});
+            $('#animateImg').animate({'left':0},3000);
+            return $('#animateImg').animate({'left':'-450px'},3000).promise();
+        });
+        goombaPromise.done(function(){
+            $('#animateImg').remove();
+        })
+     }
+     $('#playMusic').click(function(){
+         audio.play();
+         var promise = toadAnimate();
+         goombaAnimate(promise);
+     });
+     $('#pauseMusic').click(function(){
+        audio.pause();
+     });
+     $('#restartMusic').click(function(){
+        audio.load();
+        audio.play();
+        var promise = toadAnimate();
+         goombaAnimate(promise);
+    });
 });
 
+//Number scramble scripts encapsulate in IIFE
 (function(){
 this.numberScramble = this.numberScramble || {};
+//Declare namespace for quick reference
+
 var ns = this.numberScramble;
 
+//Declare necessary variable
 var squareCount = 16,
     emptySquare,
     moveCount,
@@ -20,16 +59,19 @@ var squareCount = 16,
     mediumModeRecord = [],
     hardModeRecord = [];
 
-
+//use closure to initialize game in different mode
 ns.initialize = function(mode) {
     return function(){
+            addLogoAnimation();
             var scrambleStep;
             clearBoard();
             moveCount = 0;
             modeSelected = mode || 'easy';
             createBoard();
             addTiles();
+            $('#currentMode').text(modeSelected);
             $('#gameBoard').on('dragstart', dragStarted);
+            //prevent default bahavior to allow drop
             $('#gameBoard').on('dragenter', preventDefault);
             $('#gameBoard').on('dragover', preventDefault);
             $('#gameBoard').on('drop', drop);
@@ -48,24 +90,40 @@ ns.initialize = function(mode) {
                     scrambleStep = 20;
             }
             scramble(scrambleStep);
+            if(typeof localStorage !== 'undefined'){
+                var start = {
+                    easy:[],
+                    medium:[],
+                    hard:[]
+                };
+                if(localStorage.scrambleGameRecord == undefined){
+                    localStorage.setItem('scrambleGameRecord',JSON.stringify(start));
+                }
+            }
         }
 }
-
+//Create functions for different mode
     ns.easyMode = ns.initialize('easy'),
     ns.mediumMode = ns.initialize('medium'),
     ns.hardMode = ns.initialize('hard');
-
+//Add animation to logo
+function addLogoAnimation(){
+    $('#message h1').removeClass("animatedLogo");
+    setTimeout(function(){$('#message h1').addClass("animatedLogo");},500);
+}
+//Clear gameboard DOM
 function clearBoard(){
     $('#gameBoard').children().remove();
     $('#gameBoard').off();
 }
+//Create gameboard DOM
 function createBoard() {
     for (var i = 0; i < squareCount; i++) {
         var $square = $('<div id="square' + i + '" data-square="' + i + '" class="square"></div>');
         $square.appendTo($('#gameBoard'));
     }
 }
-
+//Add tiles to squares in gameboard
 function addTiles() {
     emptySquare = squareCount - 1;
     for (var i = 0; i < emptySquare; i++) {
@@ -74,17 +132,18 @@ function addTiles() {
         $tile.appendTo($square);
     }
 }
-
+//callback function for dragstart event
 function dragStarted(e) {
     var $tile = $(e.target);
     var sourceLocation = $tile.parent().data('square');
     e.dataTransfer.setData('text', sourceLocation.toString());
     e.dataTransfer.effectAllowed = 'move';
 }
-
+//callback function for dragenter and dragover event to allow drop 
 function preventDefault(e) {
     e.preventDefault();
 }
+//callback function for drop event
 function drop(e) {
     var $square = $(e.target);
     if ($square.hasClass('square')) {
@@ -95,13 +154,15 @@ function drop(e) {
         checkForWinner();
     }
 }
-
+//callback function for moving tiles
 function moveTile(sourceLocation) {
     var distance = (sourceLocation - emptySquare)>0?(sourceLocation - emptySquare):(emptySquare -sourceLocation);
+    //Calculate distance. Only adjacent tiles can be swapped.
     if (distance == 1 || distance == 4) {
         swapTileAndEmptySquare(sourceLocation);
     }
 }
+//swap empty tile and target tile
 function swapTileAndEmptySquare(sourceLocation) {
     var $draggedItem = $('#square' + sourceLocation).children();
     $draggedItem.detach();
@@ -110,7 +171,7 @@ function swapTileAndEmptySquare(sourceLocation) {
     emptySquare = sourceLocation;
     moveCount++;
 }
-
+//Scramble the tiles. adjust move to provide scramble function for different mode
 function scramble(move) {
     for (var i = 0; i < move; i++) {
         var random = Math.random();
@@ -137,7 +198,7 @@ function scramble(move) {
     }
     moveCount = 0;
 }
-
+//check whether player win the game. If win, clear the board, append win message and also update game record.
 function checkForWinner() {
     if (emptySquare != squareCount - 1) return;
     for (var i = 0; i < emptySquare; i++) {
@@ -145,11 +206,12 @@ function checkForWinner() {
     }
     //Clear board, add win message to the board.
     clearBoard();
-    var $winMessage = $('<p class="text-center" id="winMessage"></p>');
+    var $winMessage = $('<p class="text-center" id="winMessage"></p><img alt="win" class="animated rubberBand" src="img/thumbup.png" style="margin-top:10px;width:70%;height:50%"/>');
     $winMessage.appendTo($('#gameBoard'));
+
     $('#winMessage').html('Winner! Total move: '+moveCount).addClass('animated zoomIn');
     addGameRecord();
-    ns.displayGameRecord();
+    ns.updateGameRecord();
 }
 
 //Add game record to localStorage 
@@ -180,8 +242,8 @@ function addGameRecord(){
         $("<li class='list-group-item'>Your browser does not support localStorage</li>").appendTo($('#scoreRecord'));
     }
 }
-//Retrive game record in localStoarge and display the record
-ns.displayGameRecord = function(){
+//Retrive game record in localStoarge and update the record
+ns.updateGameRecord = function(){
     if(localStorage.scrambleGameRecord !== "undefined"){
         var gameRecord = JSON.parse(localStorage.getItem('scrambleGameRecord')),
             easyRecord = editForRank(gameRecord.easy),
@@ -209,9 +271,8 @@ function editForRank(scores){
     })
     return scores.slice(0,5);
 }
-
-function getDate(){
     // Return current date MM/dd/YY
+function getDate(){
     return (new Date()).toLocaleString().split(",")[0];
 }
 

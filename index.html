@@ -16,59 +16,70 @@
         <div id="message"  class="clearfix">
             <h1 class="text-center">Scramble It</h1>
         </div>
-
-<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Game Record</h4>
-      </div>
-      <div class="modal-body">
-          <!-- Nav tabs -->
-          <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active"><a href="#easyRecord" aria-controls="easyRecord" role="tab" data-toggle="tab">Easy</a></li>
-            <li role="presentation"><a href="#mediumRecord" aria-controls="mediumRecord" role="tab" data-toggle="tab">Medium</a></li>
-            <li role="presentation"><a href="#hardRecord" aria-controls="hardRecord" role="tab" data-toggle="tab">Hard</a></li>
-          </ul>
-          <!-- Tab panes -->
-          <div class="tab-content">
-            <div role="tabpanel" class="tab-pane fade in active" id="easyRecord">
-                <h2 class="text-center">Top 5 Rank </h2>
-                <ul class="list-group"></ul>
+      <!-- Modal -->
+      <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="myModalLabel">Game Record</h4>
             </div>
-            <div role="tabpanel" class="tab-pane fade" id="mediumRecord">
-                <h2 class="text-center">Top 5 Rank </h2>
-                <ul class="list-group"></ul>
+            <div class="modal-body">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                  <li role="presentation" class="active"><a href="#easyRecord" aria-controls="easyRecord" role="tab" data-toggle="tab">Easy</a></li>
+                  <li role="presentation"><a href="#mediumRecord" aria-controls="mediumRecord" role="tab" data-toggle="tab">Medium</a></li>
+                  <li role="presentation"><a href="#hardRecord" aria-controls="hardRecord" role="tab" data-toggle="tab">Hard</a></li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content">
+                  <div role="tabpanel" class="tab-pane fade in active" id="easyRecord">
+                      <h2 class="text-center">Top 5 Rank </h2>
+                      <ul class="list-group"></ul>
+                  </div>
+                  <div role="tabpanel" class="tab-pane fade" id="mediumRecord">
+                      <h2 class="text-center">Top 5 Rank </h2>
+                      <ul class="list-group"></ul>
+                  </div>
+                  <div role="tabpanel" class="tab-pane fade" id="hardRecord">
+                      <h2 class="text-center">Top 5 Rank </h2>
+                      <ul class="list-group"></ul>
+                  </div>
+                </div>
             </div>
-            <div role="tabpanel" class="tab-pane fade" id="hardRecord">
-                <h2 class="text-center">Top 5 Rank </h2>
-                <ul class="list-group"></ul>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-success" data-dismiss="modal">Continue Playing!</button>
             </div>
           </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-success" data-dismiss="modal">Continue Playing!</button>
-      </div>
-    </div>
-  </div>
-</div>    
-        <div id="gameBoard">
         </div>
-        <div class="wrapper"> 
+      </div>    
+      <div id="gameBoard"></div>
+      <div class="wrapper"> 
           <div id="btn-group">
                <div class="btn-group btn-group-lg"  role="group">
-          <button class="btn btn-success" id="easyMode">Easy</button>
-          <button class="btn btn-warning" id="mediumMode">Medium</button>
-          <button class="btn btn-danger" id="hardMode">Hard</button>           
+               <button class="btn btn-success" id="easyMode">Easy</button>
+               <button class="btn btn-warning" id="mediumMode">Medium</button>
+               <button class="btn btn-danger" id="hardMode">Hard</button>           
                </div>
            <!-- Button trigger modal -->
           <button type="button" class="btn btn-primary btn-lg" id="scoreBtn" data-toggle="modal" data-target="#myModal">Score Board</button>
           </div>
+          <div id="gameInfo">
+            <span>Current Mode: <span id="currentMode"></span></span>
+            <span id="musicControl">
+              <span class="glyphicon glyphicon-music"></span>
+              <span> Controls: </span>
+              <span class="glyphicon glyphicon-play" id="playMusic"></span>
+              <span class="glyphicon glyphicon-pause" id="pauseMusic"></span>
+              <span class="glyphicon glyphicon-refresh" id="restartMusic"></span>
+            </span>
+            
+          </div>
       </div>
-   
     </div>
+    <audio src="audio/mario.mp3" type="audio/mpeg" id="audio">
+        Your browser does not support the audio element
+    </audio>
     <footer class="container">
         <p class="text-center">Andy's Factory &copy; - 2015 </p>
         <a href="https://github.com/andyhu92/NumberScramble" target="_blank"><span class="mega-octicon octicon-mark-github"></span></a>
