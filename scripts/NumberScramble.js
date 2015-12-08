@@ -206,12 +206,18 @@ function checkForWinner() {
     }
     //Clear board, add win message to the board.
     clearBoard();
-    var $winMessage = $('<p class="text-center" id="winMessage"></p><img alt="win" class="animated rubberBand" src="img/thumbup.png" style="margin-top:10px;width:70%;height:50%"/>');
+    var $winMessage = $('<p class="text-center winMessage" id="winMessage" ></p>'+
+        '<img alt="win" class="animated rubberBand" src="img/thumbup.png"'+
+        'style="margin-top:10px;width:70%;height:50%"/>'+
+        '<p class="text-center winMessage" id="playAgain">Play Again!</p>');
     $winMessage.appendTo($('#gameBoard'));
 
     $('#winMessage').html('Winner! Total move: '+moveCount).addClass('animated zoomIn');
     addGameRecord();
     ns.updateGameRecord();
+    $('#playAgain').click(function(){
+        ns.initialize(modeSelected)();
+     })
 }
 
 //Add game record to localStorage 

@@ -38,9 +38,16 @@ border-width: 16px 17px 12px;
 border-image: url(../img/GameBorder.png) 26 27 22 fill repeat;
 }
 
-#winMessage{
+.winMessage{
     font-size: 30px;
     color: white;
+}
+#playAgain{
+    cursor:pointer;
+    transition: transform 0.2s;
+}
+#playAgain:hover{
+     transform: scale(1.25);
 }
 .tile {
     font-size: 60px;
