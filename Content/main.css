@@ -1,12 +1,16 @@
-﻿body {
+body {
     font-family: Arial, Helvetica, sans-serif;
     background-image:url("../img/bg.jpg");
     background-size: cover;
+    -moz-user-select: none; 
+    -khtml-user-select: none; 
+    -webkit-user-select: none; 
+    -o-user-select: none;
 }
 @keyframes logo{
   0%,50%,100% { text-shadow:2px 2px 2px white;}
-  25% { text-shadow:2px 2px 2px lightgreen;}
-  75% { text-shadow: 2px 2px 4px yellow;}
+  25% { text-shadow:2px 2px 4px lightgreen;}
+  75% { text-shadow: 2px 2px 5px yellow;}
 }
 .animatedLogo{
      -webkit-animation: logo 2s forwards;
